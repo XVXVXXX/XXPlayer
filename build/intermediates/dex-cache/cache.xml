@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/xvxvxxx/Developer/JAVAworkspace/XXPlayer/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="/Users/xvxvxxx/Developer/JAVAworkspace/XXPlayer/app/build/intermediates/pre-dexed/debug/classes-01d78072588ede39c479c3998aed22f9739f64f5.jar" />
+    </item>
+    <item
+        jar="/Users/xvxvxxx/ Development/SDK/android-sdk-macosx/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="/Users/xvxvxxx/Developer/JAVAworkspace/XXPlayer/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-2ed1722a4a571f1a5378136beb0dfba3e7cd8b07.jar" />
+    </item>
+    <item
+        jar="/Users/xvxvxxx/Developer/Android/XXPlayer/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="/Users/xvxvxxx/Developer/Android/XXPlayer/app/build/intermediates/pre-dexed/debug/classes-49fbe3bbcbc526e96f4257ee27efad15f6393d5c.jar" />
+    </item>
+    <item
+        jar="/Users/xvxvxxx/Developer/Android/XXPlayer/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="/Users/xvxvxxx/Developer/Android/XXPlayer/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-63ab48b6559b81b996eac447ff77d9f14bca0011.jar" />
+    </item>
+    <item
+        jar="/Users/xvxvxxx/Developer/JAVAworkspace/XXPlayer/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="/Users/xvxvxxx/Developer/JAVAworkspace/XXPlayer/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-c6d43438f0b0379ab48979e6f3d56ee10504efe0.jar" />
+    </item>
+    <item
+        jar="/Users/xvxvxxx/Developer/Android/XXPlayer/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="/Users/xvxvxxx/Developer/Android/XXPlayer/app/build/intermediates/pre-dexed/debug/classes-4737b0b2a703b4e221265081202dbe6139726db5.jar" />
+    </item>
+    <item
+        jar="/Users/xvxvxxx/Developer/JAVAworkspace/XXPlayer/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="/Users/xvxvxxx/Developer/JAVAworkspace/XXPlayer/app/build/intermediates/pre-dexed/debug/classes-4e8b5beca3e15fc862e5c1119ed4c65ea937b7b9.jar" />
+    </item>
+
+</items>
