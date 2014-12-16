@@ -1,76 +1,52 @@
 package com.example.xvxvxxx.xxplayer;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SimpleAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.os.Message;
-import org.w3c.dom.Text;
-
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
 
 public class MainActivity extends ActionBarActivity  {
-
+    //搜索音乐类
     private SearchMusic searchMusic;
     //返回的音乐列表，用来形成listView
     List<Map<String,Object>> musicList;
     private String musicURL;
     private int musicPosition;
     private Stack<Integer> musicPlayStack;
-    //public Playlist playlist;
+    //播放列表视图
     private ListView listView;
     private List<String> playList;
-    // Header Bar
+    //Header条
     private ImageView listButton;
     private ImageView logoButton;
-    private ImageView settingButton;
-    //播放栏button 包括开始/暂停、上一曲、随机、下一曲
+    private ImageView doubanFMButton;
+    //播放栏Button 包括开始/暂停、上一曲、随机、下一曲
     private ImageView backButton;
     private ImageView playButton;
     private ImageView nextButton;
     private ImageView shuffleButton;
-    //音乐信息view
-    private TextView duration;
-    private TextView currTrackPosition;
+    //音乐信息View
     private TextView trackTitle;
     private TextView trackArtist;
     private TextView trackAlbum;
@@ -81,21 +57,19 @@ public class MainActivity extends ActionBarActivity  {
     private Timer timer;
     private TimerTask timerTask;
     private SeekBar progressBar;
-
     //webView
     private WebView webView;
-
     private Slides currSlide = Slides.NOW_PLAYING;
     // Slides
     private RelativeLayout nowPlayingSlide;
     private RelativeLayout playlistSlide;
-    private RelativeLayout settingsSlide;
+    private RelativeLayout doubanFM;
 
     // Music mediaPlayer
     private MediaPlayer mediaPlayer;
     public enum Slides
     {
-        SETTINGS,
+        DoubanFM,
         PLAYLIST,
         NOW_PLAYING
     }
@@ -120,25 +94,24 @@ public class MainActivity extends ActionBarActivity  {
         musicURL = (String)musicList.get(musicPosition).get("url");
         musicPlayStack.push(musicPosition);
         playMusic();
+        loadWebView();
     }
 
     private void lookupViewElements(){
         listButton = (ImageView) findViewById( R.id.listButton);
         logoButton = (ImageView) findViewById( R.id.logoButton);
         logoButton.setImageDrawable(getResources().getDrawable(R.drawable.logo128_active));
-        settingButton = (ImageView) findViewById( R.id.settingsButton);
+        doubanFMButton = (ImageView) findViewById( R.id.doubanFMButton);
         //
         backButton = (ImageView) findViewById( R.id.backButton);
         playButton = (ImageView) findViewById( R.id.playButton);
         shuffleButton = (ImageView) findViewById( R.id.shuffleButton);
         nextButton = (ImageView) findViewById( R.id.nextButton);
-
         //
         listView = (ListView) findViewById(R.id.filterlist);
         nowPlayingSlide = (RelativeLayout) findViewById(R.id.now_playing_slide);
         playlistSlide = (RelativeLayout) findViewById(R.id.playlist_slide);
-        settingsSlide = (RelativeLayout) findViewById(R.id.settings_slide);
-//          shuffleCheckBox = (CheckBox) findViewById( R.id.shuffleCheckBox);
+        doubanFM = (RelativeLayout) findViewById(R.id.settings1);
         //音乐信息view
         trackTitle = (TextView) findViewById( R.id.trackTitle);
         trackTitle.setTextColor(Color.WHITE);
@@ -187,13 +160,12 @@ public class MainActivity extends ActionBarActivity  {
             }
         });
 
-        settingButton.setOnClickListener(new View.OnClickListener()
+        doubanFMButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
             {
-                SwitchToSettingsSlide();
+                SwitchTodoubanFM();
                 //
-                loadWebView();
                 if (mediaPlayer.isPlaying()){
                     mediaPlayer.pause();
                 }
@@ -267,7 +239,6 @@ public class MainActivity extends ActionBarActivity  {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int tempSeconds = mediaPlayer.getCurrentPosition();
-//                int tempSeconds = progress;
                 int minute = (tempSeconds/1000)/60;
                 int second = (tempSeconds/1000)%60;
                 if (second<10){
@@ -277,16 +248,14 @@ public class MainActivity extends ActionBarActivity  {
                     trackCurrPostion.setText(minute +":" +second);
                     }
             }
-
+            
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.seekTo(progressBar.getProgress());
-//                mediaPlayer.
             }
         });
     }
@@ -314,7 +283,7 @@ public class MainActivity extends ActionBarActivity  {
     {
         listButton.setImageDrawable(getResources().getDrawable(R.drawable.list64));
         logoButton.setImageDrawable(getResources().getDrawable(R.drawable.logo128));
-        settingButton.setImageDrawable(getResources().getDrawable(R.drawable.settings48));
+        doubanFMButton.setImageDrawable(getResources().getDrawable(R.drawable.settings48));
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -329,14 +298,12 @@ public class MainActivity extends ActionBarActivity  {
     //
     private void SwitchToNowPlayingSlide()
     {
-        duration = (TextView) findViewById(R.id.trackDuration);
-        currTrackPosition = (TextView) findViewById(R.id.trackCurrPostion);
         ResetHeaderButtons();
         logoButton.setImageDrawable(getResources().getDrawable(R.drawable.logo128_active));
         currSlide = Slides.NOW_PLAYING;
         nowPlayingSlide.setVisibility(LinearLayout.VISIBLE);
         playlistSlide.setVisibility(LinearLayout.INVISIBLE);
-        settingsSlide.setVisibility(LinearLayout.INVISIBLE);
+        doubanFM.setVisibility(LinearLayout.INVISIBLE);
     }
     //
     private void SwitchToPlaylistSlide()
@@ -347,17 +314,17 @@ public class MainActivity extends ActionBarActivity  {
         logoButton.requestLayout();
         nowPlayingSlide.setVisibility(LinearLayout.INVISIBLE);
         playlistSlide.setVisibility(LinearLayout.VISIBLE);
-        settingsSlide.setVisibility(LinearLayout.INVISIBLE);
+        doubanFM.setVisibility(LinearLayout.INVISIBLE);
     }
     //
-    private void SwitchToSettingsSlide()
+    private void SwitchTodoubanFM()
     {
         ResetHeaderButtons();
-        settingButton.setImageDrawable(getResources().getDrawable(R.drawable.settings48_active));
-        currSlide = Slides.SETTINGS;
+        doubanFMButton.setImageDrawable(getResources().getDrawable(R.drawable.settings48_active));
+        currSlide = Slides.DoubanFM;
         nowPlayingSlide.setVisibility(LinearLayout.INVISIBLE);
         playlistSlide.setVisibility(LinearLayout.INVISIBLE);
-        settingsSlide.setVisibility(LinearLayout.VISIBLE);
+        doubanFM.setVisibility(LinearLayout.VISIBLE);
     }
     //
     private void playMusic(){
@@ -398,9 +365,7 @@ public class MainActivity extends ActionBarActivity  {
                 //BrowserActivity.this.setProgress(progress * 100);
             }
         });
-
         webView.loadUrl("http://www.douban.fm");
-
     }
 
 }
