@@ -24,19 +24,19 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/settings_slide"
+        android:id="@+id/doubanfm_slide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/header"
         android:visibility="visible" >
 
         <include
-            android:id="@+id/settings1"
+            android:id="@+id/doubanfm"
             android:layout_width="fill_parent"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true"
-            layout="@layout/settings1" />
+            layout="@layout/doubanfm" />
 
     </RelativeLayout>
 

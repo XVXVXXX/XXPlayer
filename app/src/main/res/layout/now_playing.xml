@@ -138,12 +138,37 @@
                     android:src="@drawable/next48" />
             </LinearLayout>
         </RelativeLayout>
-        <SeekBar
-            android:id="@+id/progressBar"
+
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:progressDrawable="@drawable/progress_bar_full"
-            android:layout_alignParentTop="true"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/picture1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/blank_album_art1"
+                android:layout_alignBottom="@+id/progressBar" />
+
+            <SeekBar
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:progressDrawable="@drawable/progress_bar_full"
+                android:layout_alignParentTop="true"/>
+            </RelativeLayout>
+
+        <!--<SeekBar-->
+            <!--android:id="@+id/progressBar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:progressDrawable="@drawable/progress_bar_full"-->
+            <!--android:layout_alignParentTop="true"/>-->
     </RelativeLayout>
 
 </LinearLayout>

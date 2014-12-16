@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
@@ -57,22 +58,14 @@ public class MainActivity extends ActionBarActivity  {
     private Timer timer;
     private TimerTask timerTask;
     private SeekBar progressBar;
-    //webView
+    //webView DoubanFM
     private WebView webView;
-    private Slides currSlide = Slides.NOW_PLAYING;
-    // Slides
+    //Slides页面
     private RelativeLayout nowPlayingSlide;
     private RelativeLayout playlistSlide;
-    private RelativeLayout doubanFM;
-
+    private RelativeLayout doubanFMSlide;
     // Music mediaPlayer
     private MediaPlayer mediaPlayer;
-    public enum Slides
-    {
-        DoubanFM,
-        PLAYLIST,
-        NOW_PLAYING
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,21 +73,7 @@ public class MainActivity extends ActionBarActivity  {
         setContentView(R.layout.activity_main);
         lookupViewElements();
         init();
-        setupListeners();
 
-        //得到音乐列表
-        searchMusic = new SearchMusic(this);
-        musicList = searchMusic.getList();
-        //给listView填写数据
-        SimpleAdapter adapter = new SimpleAdapter( this, musicList, R.layout.playlistitem, new String[] {"title", "artist"}, new int[]{R.id.title, R.id.artist});
-        listView.setAdapter(adapter);
-        //播放歌曲
-        //随机播放的URL
-        musicPosition = (int)(Math.random()*10000)%musicList.size();
-        musicURL = (String)musicList.get(musicPosition).get("url");
-        musicPlayStack.push(musicPosition);
-        playMusic();
-        loadWebView();
     }
 
     private void lookupViewElements(){
@@ -102,7 +81,7 @@ public class MainActivity extends ActionBarActivity  {
         logoButton = (ImageView) findViewById( R.id.logoButton);
         logoButton.setImageDrawable(getResources().getDrawable(R.drawable.logo128_active));
         doubanFMButton = (ImageView) findViewById( R.id.doubanFMButton);
-        //
+        //播放button
         backButton = (ImageView) findViewById( R.id.backButton);
         playButton = (ImageView) findViewById( R.id.playButton);
         shuffleButton = (ImageView) findViewById( R.id.shuffleButton);
@@ -111,7 +90,7 @@ public class MainActivity extends ActionBarActivity  {
         listView = (ListView) findViewById(R.id.filterlist);
         nowPlayingSlide = (RelativeLayout) findViewById(R.id.now_playing_slide);
         playlistSlide = (RelativeLayout) findViewById(R.id.playlist_slide);
-        doubanFM = (RelativeLayout) findViewById(R.id.settings1);
+        doubanFMSlide = (RelativeLayout) findViewById(R.id.doubanfm);
         //音乐信息view
         trackTitle = (TextView) findViewById( R.id.trackTitle);
         trackTitle.setTextColor(Color.WHITE);
@@ -134,6 +113,7 @@ public class MainActivity extends ActionBarActivity  {
     //点击监控
     private void setupListeners()
     {
+        //播放列表点击监控
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -142,8 +122,7 @@ public class MainActivity extends ActionBarActivity  {
                 SwitchToNowPlayingSlide();
             }
         });
-
-        // [header.xml] Header Button
+        //三个头部按钮监控
         listButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -163,15 +142,9 @@ public class MainActivity extends ActionBarActivity  {
         doubanFMButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
-            {
-                SwitchTodoubanFM();
-                //
-                if (mediaPlayer.isPlaying()){
-                    mediaPlayer.pause();
-                }
+            {SwitchToDoubanFMSlide();
             }
         });
-
         //开始播放、暂停播放
         playButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -185,7 +158,6 @@ public class MainActivity extends ActionBarActivity  {
                 }
             }
         });
-
         //上一曲
         backButton.setOnClickListener(new View.OnClickListener()
         {
@@ -201,7 +173,6 @@ public class MainActivity extends ActionBarActivity  {
                 playMusic();
             }
         });
-
         //随机下一曲
         shuffleButton.setOnClickListener(new View.OnClickListener()
         {
@@ -212,7 +183,6 @@ public class MainActivity extends ActionBarActivity  {
                 playMusic();
             }
         });
-
         //下一曲
         nextButton.setOnClickListener(new View.OnClickListener()
         {
@@ -223,7 +193,6 @@ public class MainActivity extends ActionBarActivity  {
                 playMusic();
             }
         });
-
         //播放完一首歌之后，下一曲
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -233,7 +202,6 @@ public class MainActivity extends ActionBarActivity  {
                 playMusic();
             }
         });
-
         //进度条监控
         progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -248,19 +216,16 @@ public class MainActivity extends ActionBarActivity  {
                     trackCurrPostion.setText(minute +":" +second);
                     }
             }
-            
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.seekTo(progressBar.getProgress());
             }
         });
     }
-
-
+    //初始化工作
     private void init() {
         musicPlayStack = new Stack<Integer>();
         mediaPlayer = new MediaPlayer();
@@ -268,17 +233,27 @@ public class MainActivity extends ActionBarActivity  {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                // TODO Auto-generated method stub
-                //正在拖动seekbar,停止Timer
                 progressBar.setProgress(mediaPlayer.getCurrentPosition());
-
             }
         };
         timer.schedule(timerTask, 0, 10);
+
+        setupListeners();
+        //得到音乐列表
+        searchMusic = new SearchMusic(this);
+        musicList = searchMusic.getList();
+        //给listView填写数据
+        SimpleAdapter adapter = new SimpleAdapter( this, musicList, R.layout.playlistitem, new String[] {"title", "artist"}, new int[]{R.id.title, R.id.artist});
+        listView.setAdapter(adapter);
+        //播放歌曲
+        //随机播放的URL
+        musicPosition = (int)(Math.random()*10000)%musicList.size();
+        musicURL = (String)musicList.get(musicPosition).get("url");
+        musicPlayStack.push(musicPosition);
+        playMusic();
+        loadWebView();
     }
-
-
-
+    //重置HeaderBar的image
     private void ResetHeaderButtons()
     {
         listButton.setImageDrawable(getResources().getDrawable(R.drawable.list64));
@@ -300,33 +275,34 @@ public class MainActivity extends ActionBarActivity  {
     {
         ResetHeaderButtons();
         logoButton.setImageDrawable(getResources().getDrawable(R.drawable.logo128_active));
-        currSlide = Slides.NOW_PLAYING;
         nowPlayingSlide.setVisibility(LinearLayout.VISIBLE);
         playlistSlide.setVisibility(LinearLayout.INVISIBLE);
-        doubanFM.setVisibility(LinearLayout.INVISIBLE);
+        doubanFMSlide.setVisibility(LinearLayout.INVISIBLE);
     }
     //
     private void SwitchToPlaylistSlide()
     {
         ResetHeaderButtons();
         listButton.setImageDrawable(getResources().getDrawable(R.drawable.list64_active));
-        currSlide = Slides.PLAYLIST;
         logoButton.requestLayout();
         nowPlayingSlide.setVisibility(LinearLayout.INVISIBLE);
         playlistSlide.setVisibility(LinearLayout.VISIBLE);
-        doubanFM.setVisibility(LinearLayout.INVISIBLE);
+        doubanFMSlide.setVisibility(LinearLayout.INVISIBLE);
     }
     //
-    private void SwitchTodoubanFM()
+    private void SwitchToDoubanFMSlide()
     {
         ResetHeaderButtons();
+        if (mediaPlayer.isPlaying()){
+            mediaPlayer.pause();
+        }
         doubanFMButton.setImageDrawable(getResources().getDrawable(R.drawable.settings48_active));
-        currSlide = Slides.DoubanFM;
         nowPlayingSlide.setVisibility(LinearLayout.INVISIBLE);
         playlistSlide.setVisibility(LinearLayout.INVISIBLE);
-        doubanFM.setVisibility(LinearLayout.VISIBLE);
+        doubanFMSlide.setVisibility(LinearLayout.VISIBLE);
+        webView.scrollTo(0,280);
     }
-    //
+    //播放音乐
     private void playMusic(){
         musicURL = (String)musicList.get(musicPosition).get("url");
         trackTitle.setText((String)musicList.get(musicPosition).get("title"));
@@ -337,7 +313,12 @@ public class MainActivity extends ActionBarActivity  {
         progressBar.setMax(tempSeconds);
         int minute = (tempSeconds/1000)/60;
         int second = (tempSeconds/1000)%60;
-        trackDuration.setText(minute +":" +second);
+        if (second<10){
+            trackDuration.setText(minute +":0" +second);
+        }
+        else{
+            trackDuration.setText(minute +":" +second);
+        }
         mediaPlayer.reset();
         Log.i("Playing Music",musicURL);
         try {
@@ -348,7 +329,7 @@ public class MainActivity extends ActionBarActivity  {
             e.printStackTrace();
         }
     }
-    //webView
+    //载入webView
     private void loadWebView(){
         webView.setWebViewClient(new WebViewClient() {
             // Load opened URL in the application instead of standard browser
@@ -358,14 +339,15 @@ public class MainActivity extends ActionBarActivity  {
                 return true;
             }
         });
-
         webView.setWebChromeClient(new WebChromeClient() {
             // Set progress bar during loading
             public void onProgressChanged(WebView view, int progress) {
                 //BrowserActivity.this.setProgress(progress * 100);
             }
         });
+        WebSettings websettings = webView.getSettings();
+        websettings.setJavaScriptEnabled(true);     // Warning! You can have XSS vulnerabilities!
+        //载入豆瓣电台，作为默认电台
         webView.loadUrl("http://www.douban.fm");
     }
-
 }
