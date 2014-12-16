@@ -1,0 +1,40 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.example.drone.MainActivity"
+    android:theme="@android:style/Theme.Black.NoTitleBar" >
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100" >
+        <EditText
+            android:id="@+id/en_url"
+            android:layout_weight="20"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter URL"
+            android:singleLine="true"
+            android:selectAllOnFocus="true"
+            />
+        <Button
+            android:id="@+id/btn_load"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="80"
+            android:paddingTop="10dp"
+            android:text="GO"
+            android:textSize="20sp"
+            android:textColor="#000"
+            />
+    </LinearLayout>
+    <WebView
+        android:id="@+id/myWebView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ll" />
+
+</RelativeLayout>

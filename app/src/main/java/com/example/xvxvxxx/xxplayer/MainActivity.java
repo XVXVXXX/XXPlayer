@@ -1,7 +1,9 @@
 package com.example.xvxvxxx.xxplayer;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 
@@ -10,9 +12,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -72,6 +81,9 @@ public class MainActivity extends ActionBarActivity  {
     private Timer timer;
     private TimerTask timerTask;
     private SeekBar progressBar;
+
+    //webView
+    private WebView webView;
 
     private Slides currSlide = Slides.NOW_PLAYING;
     // Slides
@@ -142,6 +154,8 @@ public class MainActivity extends ActionBarActivity  {
         trackPostionSeparator = (TextView) findViewById( R.id.trackPostionSeparator);
         trackPostionSeparator.setTextColor(Color.WHITE);
         progressBar = (SeekBar) findViewById( R.id.progressBar);
+        //
+        webView = (WebView) findViewById( R.id.webView);
     }
 
     //点击监控
@@ -178,6 +192,11 @@ public class MainActivity extends ActionBarActivity  {
             public void onClick(View v)
             {
                 SwitchToSettingsSlide();
+                //
+                loadWebView();
+                if (mediaPlayer.isPlaying()){
+                    mediaPlayer.pause();
+                }
             }
         });
 
@@ -362,32 +381,26 @@ public class MainActivity extends ActionBarActivity  {
             e.printStackTrace();
         }
     }
+    //webView
+    private void loadWebView(){
+        webView.setWebViewClient(new WebViewClient() {
+            // Load opened URL in the application instead of standard browser
+            // application
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
 
+        webView.setWebChromeClient(new WebChromeClient() {
+            // Set progress bar during loading
+            public void onProgressChanged(WebView view, int progress) {
+                //BrowserActivity.this.setProgress(progress * 100);
+            }
+        });
 
-    //进度条计时
+        webView.loadUrl("http://www.douban.fm");
 
-//    TimerTask mTimerTask = new TimerTask() {
-//        @Override
-//        public void run() {
-//            if(mediaPlayer==null)
-//                return;
-//            if (mediaPlayer.isPlaying() && progressBar.isPressed() == false) {
-//                handleProgress.sendEmptyMessage(0);
-//            }
-//        }
-//    };
-//
-//    Handler handleProgress = new Handler() {
-//        public void handleMessage(Message msg) {
-//
-//            int position = mediaPlayer.getCurrentPosition();
-//            int duration = mediaPlayer.getDuration();
-//
-//            if (duration > 0) {
-//                long pos = progressBar.getMax() * position / duration;
-//                progressBar.setProgress((int) pos);
-//            }
-//        }
-//    };
+    }
 
 }
